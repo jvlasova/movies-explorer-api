@@ -4,7 +4,7 @@ const helmet = require('helmet');
 const cookieParser = require('cookie-parser');
 const { errors } = require('celebrate');
 const router = require('./routes/index');
-const { PORT, DB_ADDRESS } = require('./config');
+const { PORT, MONGO_URI } = require('./config');
 const { limiter } = require('./limiter');
 const { requestLogger, errorLogger } = require('./middlewares/logger');
 
@@ -33,7 +33,7 @@ app.use((err, req, res, next) => {
 
 async function main() {
   try {
-    await mongoose.connect(DB_ADDRESS, {
+    await mongoose.connect(MONGO_URI, {
       useNewUrlParser: true,
       useUnifiedTopology: false,
     });
