@@ -8,9 +8,10 @@ const { currentError } = require('../utils/errors');
 
 router.post('/signup', express.json(), validateUser, createUser);
 router.post('/signin', express.json(), validateLogin, login);
-router.use('/signout', signOut);
 
 router.use(auth);
+
+router.use('/signout', signOut);
 
 router.use('/users', require('./users'));
 router.use('/movies', require('./movies'));

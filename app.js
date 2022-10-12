@@ -39,9 +39,11 @@ async function main() {
     });
 
     await app.listen(PORT, () => {
+      // eslint-disable-next-line no-console
       console.log(`Сервер запущен на localhost:${PORT}`);
     });
   } catch (err) {
+    // eslint-disable-next-line no-console
     console.log(err);
   }
 }
