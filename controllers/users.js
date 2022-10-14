@@ -1,10 +1,15 @@
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 const User = require('../models/user');
-const { currentError } = require('../utils/errors');
 const BadReqError = require('../errors/bad_req_error');
 const NotFoundError = require('../errors/not_found_error');
 const EmailError = require('../errors/email_error');
+const {
+  messageNotFoundError,
+  messageEmailError,
+  messageBadReqError,
+  messageSignOut,
+} = require('../utils/constant');
 
 const { NODE_ENV, JWT_SECRET } = process.env;
 
@@ -14,7 +19,7 @@ const getMe = (req, res, next) => {
       if (user) {
         res.send(user);
       } else {
-        throw currentError({ name: 'NotFoundError' });
+        throw new NotFoundError(messageNotFoundError);
       }
     })
     .catch(next);
@@ -36,11 +41,11 @@ const createUser = (req, res, next) => {
         })
         .catch((e) => {
           if (e.code === 11000) {
-            const err = new EmailError('Пользователь с таким email уже зарегистрирован');
+            const err = new EmailError(messageEmailError);
             next(err);
           }
           if (e.name === 'ValidationError') {
-            const err = new BadReqError('Переданы некорректные данные при создании профиля');
+            const err = new BadReqError(messageBadReqError);
             next(err);
           } else {
             next(e);
@@ -73,32 +78,31 @@ const signOut = (req, res, next) => {
   res.clearCookie('jwt', {
     sameSite: true,
   })
-    .send({ message: 'Cookies удалены' });
+    .send({ message: messageSignOut });
   next();
 };
 
 const updateUserInfo = (req, res, next) => {
-  const { name, about } = req.body;
+  const { name, email } = req.body;
   User.findByIdAndUpdate(
     req.user._id,
-    { name, about },
+    { name, email },
     { new: true, runValidators: true },
   )
     .then((user) => {
       if (user) {
         res.send(user);
       } else {
-        throw new NotFoundError('Пользователь с указанным _id не найден')();
+        throw new NotFoundError(messageNotFoundError);
       }
     })
     .catch((e) => {
-      if (e.name === 'ValidationError') {
-        const err = new BadReqError('Переданы некорректные данные при обновлении профиля');
+      if (e.code === 11000) {
+        const err = new EmailError(messageEmailError);
         next(err);
-        return;
       }
-      if (e.name === 'CastError') {
-        const err = new BadReqError('Передан некорректный _id пользователя');
+      if (e.name === 'ValidationError') {
+        const err = new BadReqError(messageBadReqError);
         next(err);
       } else {
         next(e);

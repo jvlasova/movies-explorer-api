@@ -1,7 +1,7 @@
 const express = require('express');
 
 const movies = express.Router();
-const { validateMovie, validateMovieId } = require('../validation/validation');
+const { validateMovie, validateMovieId } = require('../middlewares/validation');
 
 const {
   getMovies,

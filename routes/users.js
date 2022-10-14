@@ -1,5 +1,5 @@
 const express = require('express');
-const { validateUserUpdate } = require('../validation/validation');
+const { validateUserUpdate } = require('../middlewares/validation');
 
 const users = express.Router();
 

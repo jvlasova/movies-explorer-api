@@ -1,5 +1,6 @@
 const jwt = require('jsonwebtoken');
-const { currentError } = require('../utils/errors');
+const AuthError = require('../errors/auth_error');
+const { messageAuthError } = require('../utils/constant');
 
 const { NODE_ENV, JWT_SECRET } = process.env;
 
@@ -11,7 +12,8 @@ const auth = (req, res, next) => {
   try {
     payload = jwt.verify(token, NODE_ENV === 'production' ? JWT_SECRET : 'secret');
   } catch (e) {
-    next(currentError({ name: 'AuthError' }));
+    const err = new AuthError(messageAuthError);
+    next(err);
   }
 
   req.user = payload;

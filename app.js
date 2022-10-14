@@ -4,32 +4,25 @@ const helmet = require('helmet');
 const cookieParser = require('cookie-parser');
 const { errors } = require('celebrate');
 const router = require('./routes/index');
-const { PORT, MONGO_URI } = require('./config');
-const { limiter } = require('./limiter');
+const { PORT, MONGO_URI } = require('./utils/config');
+const { limiter } = require('./utils/limiter');
 const { requestLogger, errorLogger } = require('./middlewares/logger');
+const { errorHandler } = require('./middlewares/errorHandler');
 
 const app = express();
 
 app.use(helmet());
 app.use(cookieParser());
-app.use(limiter);
 
 app.use(requestLogger);
+
+app.use(limiter);
+
 app.use('/', router);
+
 app.use(errorLogger);
 app.use(errors());
-
-app.use((err, req, res, next) => {
-  const { statusCode = 500, message } = err;
-  res
-    .status(statusCode)
-    .send({
-      message: statusCode === 500
-        ? 'На сервере произошла ошибка'
-        : message,
-    });
-  next();
-});
+app.use(errorHandler);
 
 async function main() {
   try {
