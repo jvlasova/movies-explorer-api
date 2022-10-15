@@ -43,8 +43,7 @@ const createUser = (req, res, next) => {
           if (e.code === 11000) {
             const err = new EmailError(messageEmailError);
             next(err);
-          }
-          if (e.name === 'ValidationError') {
+          } else if (e.name === 'ValidationError') {
             const err = new BadReqError(messageBadReqError);
             next(err);
           } else {
