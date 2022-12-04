@@ -20,7 +20,34 @@ module.exports.getMovies = async (req, res, next) => {
 
 module.exports.createMovie = async (req, res, next) => {
   try {
-    const movie = await Movie.create({ ...req.body, owner: req.user._id });
+    const {
+      country,
+      director,
+      duration,
+      year,
+      description,
+      image,
+      trailerLink,
+      nameRU,
+      nameEN,
+      thumbnail,
+      movieId,
+    } = req.body;
+    const owner = req.user._id;
+    const movie = await Movie.create({
+      country,
+      director,
+      duration,
+      year,
+      description,
+      image,
+      trailerLink,
+      nameRU,
+      nameEN,
+      thumbnail,
+      movieId,
+      owner,
+    });
     res.send(movie);
   } catch (e) {
     if (e.name === 'ValidationError') {
