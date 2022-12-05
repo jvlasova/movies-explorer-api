@@ -13,6 +13,7 @@ const allowedCors = [
   'https://jvlasova.movies.nomoredomains.icu',
   'https://api.jvlasova.movies.nomoredomains.icu',
   'http://localhost:3000',
+  'http://localhost:3001',
 ];
 
 const app = express();
